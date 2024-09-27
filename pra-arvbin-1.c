@@ -1,7 +1,18 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-Arvore* cria() {
+typedef struct no {
+	struct no* pai; 
+	struct no* esquerda;
+	struct no* direita; 
+	float valor; 
+} No;
+
+typedef struct arvore {
+	struct no* raiz;
+} Arvore;
+
+Arvore* criar() {
 	Arvore *arvore;
 	arvore = malloc(sizeof(Arvore));
 	arvore->raiz = NULL;
@@ -13,7 +24,7 @@ int vazia(Arvore* arvore) {
 	return (arvore->raiz == NULL);
 }
 
-No* adiciona(Arvore* arvore, No* pai, float valor) {
+No* adicionar(Arvore* arvore, No* pai, float valor) {
 	No *no  = malloc(sizeof(No));
 	no->pai = pai;
 	no->esquerda = NULL;
@@ -27,12 +38,12 @@ No* adiciona(Arvore* arvore, No* pai, float valor) {
 	return no;
 }
 
-void remove(Arvore* arvore, No* no) {
+void remover(Arvore* arvore, No* no) {
 	if (no->esquerda != NULL)
-		remove(arvore, no->esquerda);
+		remover(arvore, no->esquerda);
 	
 	if (no->direita != NULL)
-	 	remove(arvore, no->direita);
+	 	remover(arvore, no->direita);
 	
 	if (no->pai == NULL) {
 	 	arvore->raiz = NULL;
@@ -40,6 +51,7 @@ void remove(Arvore* arvore, No* no) {
 	} else {
 	 	if (no->pai->esquerda == no)
 	 		no->pai->esquerda = NULL;
+	 		
 	 	else
 	 		no->pai->direita = NULL;
 	}
@@ -57,7 +69,18 @@ void percorrer(No* no) {
 }
 
 int main() {
-	//
-		
+	Arvore* avr = criar();
+	No* no;
+	int valores[7] = { 1, 2, 3, 4, 5, 6, 7 };
+	int i = 0;
+	
+	vazia(avr);
+	
+	for (i = 0; i <= 7; i++){
+		adicionar(avr, no, valores[i]);
+	}
+	
+	percorrer(no);
+	
 	return 0;
 }
