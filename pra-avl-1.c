@@ -13,10 +13,8 @@ typedef struct arvore {
 } Arvore;
 
 Arvore* criarArvore() {
-	Arvore *arvore;
-	arvore = malloc(sizeof(Arvore));
+	Arvore *arvore = malloc(sizeof(Arvore));
 	arvore->raiz = NULL;
-	
 	return arvore;
 }
 
@@ -24,134 +22,145 @@ int vazia(Arvore* arvore) {
 	return (arvore->raiz == NULL);
 }
 
-No* adicionar(Arvore* arvore, No* pai, float valor) {
-	No *no  = malloc(sizeof(No));
+No* criarNo(No* pai, float valor) {
+	No *no = malloc(sizeof(No));
 	no->pai = pai;
 	no->esquerda = NULL;
-	no->direita  = NULL;
-	no->valor 	 = valor;
-	
-	if (pai == NULL) {
-		arvore->raiz = no;
-	}
-	
+	no->direita = NULL;
+	no->valor = valor;
 	return no;
 }
 
-void remover(Arvore* arvore, No* no) {
-	if (no->esquerda != NULL)
-		remover(arvore, no->esquerda);
-	
-	if (no->direita != NULL)
-	 	remover(arvore, no->direita);
-	
-	if (no->pai == NULL) {
-	 	arvore->raiz = NULL;
-	 	
-	} else {
-	 	if (no->pai->esquerda == no)
-	 		no->pai->esquerda = NULL;
-	 		
-	 	else
-	 		no->pai->direita = NULL;
+int altura(No* no) {
+	if (no == NULL) return -1;
+	int esquerda = altura(no->esquerda);
+	int direita = altura(no->direita);
+	return (esquerda > direita ? esquerda : direita) + 1;
+}
+
+int fb(No* no) {
+	if (no == NULL) return 0;
+	return altura(no->esquerda) - altura(no->direita);
+}
+
+No* rse(No* no) {
+	No* direita = no->direita;
+	no->direita = direita->esquerda;
+	if (direita->esquerda != NULL) {
+		direita->esquerda->pai = no;
 	}
-	
-	free(no);
+	direita->pai = no->pai;
+	if (no->pai == NULL) {
+		direita->pai = NULL;  // Nova raiz
+	} else if (no == no->pai->esquerda) {
+		no->pai->esquerda = direita;
+	} else {
+		no->pai->direita = direita;
+	}
+	direita->esquerda = no;
+	no->pai = direita;
+	return direita;
+}
+
+No* rsd(No* no) {
+	No* esquerda = no->esquerda;
+	no->esquerda = esquerda->direita;
+	if (esquerda->direita != NULL) {
+		esquerda->direita->pai = no;
+	}
+	esquerda->pai = no->pai;
+	if (no->pai == NULL) {
+		esquerda->pai = NULL;  // Nova raiz
+	} else if (no == no->pai->direita) {
+		no->pai->direita = esquerda;
+	} else {
+		no->pai->esquerda = esquerda;
+	}
+	esquerda->direita = no;
+	no->pai = esquerda;
+	return esquerda;
+}
+
+No* rde(No* no) {
+	no->direita = rsd(no->direita);
+	return rse(no);
+}
+
+No* rdd(No* no) {
+	no->esquerda = rse(no->esquerda);
+	return rsd(no);
+}
+
+No* adicionar(Arvore* arvore, No* no, float valor) {
+	if (no == NULL) {
+		return criarNo(NULL, valor);
+	}
+	if (valor < no->valor) {
+		no->esquerda = adicionar(arvore, no->esquerda, valor);
+		no->esquerda->pai = no;
+	} else {
+		no->direita = adicionar(arvore, no->direita, valor);
+		no->direita->pai = no;
+	}
+
+	// Rebalancear a árvore
+	int fator = fb(no);
+	if (fator > 1) {
+		if (fb(no->esquerda) < 0) {
+			no->esquerda = rse(no->esquerda);
+		}
+		return rsd(no);
+	}
+	if (fator < -1) {
+		if (fb(no->direita) > 0) {
+			no->direita = rde(no->direita);
+		}
+		return rse(no);
+	}
+	return no;
 }
 
 void percorrer(No* no) {
 	if (no != NULL) {
-	 	printf("%f", no->valor);
-	 	
-	 	percorrer(no->esquerda);
-	 	percorrer(no->direita);
+		percorrer(no->esquerda);
+		printf("%f ", no->valor);
+		percorrer(no->direita);
 	}
 }
 
-int altura(No* no){
-	int esquerda = 0, direita = 0;
-	
-	if (no->esquerda != NULL) {
-		esquerda = altura(no->esquerda) + 1;
+void remover(Arvore* arvore, No* no) {
+	if (no != NULL) {
+		remover(arvore, no->esquerda);
+		remover(arvore, no->direita);
+		
+		if (no->pai == NULL) {
+			arvore->raiz = NULL;
+		} else {
+			if (no->pai->esquerda == no)
+				no->pai->esquerda = NULL;
+			else
+				no->pai->direita = NULL;
+		}
+		free(no);
 	}
-	 
-	if (no->direita != NULL) {
-	 	direita = altura(no->direita) + 1;
-	}
-	
-	return esquerda > direita ? esquerda : direita;
-}
-
-int fb(No* no) {
-	int esquerda = 0, direita = 0;
-	
-	if (no->esquerda != NULL) {
-		esquerda = altura(no->esquerda) + 1;
-	}
-	
-	if (no->direita != NULL) {
-		direita = altura(no->direita) + 1;
-	}
-	
-	return esquerda - direita;
-}
-
-No* rse(No* no) {
-	No* pai = no->pai;
-	No* direita = no->direita;
-
- 	no->direita = direita->esquerda;
- 	no->pai = direita;
- 	direita->esquerda = no;
- 	direita->pai = pai;
-
- 	return direita;
-}
-
-No* rsd(No* no) {
- 	No* pai = no->pai;
- 	No* esquerda = no->esquerda;
-
- 	no->esquerda = esquerda->direita;
- 	no->pai = esquerda;
-
- 	esquerda->direita = no;
- 	esquerda->pai = pai;
-
- 	return esquerda;
-}
-
-No* rde(No* no) {
- 	no->direita = rsd(no->direita);
- 	return rse(no);
-}
-
-No* rdd(No* no) {
- 	no->esquerda = rse(no->esquerda);
- 	return rsd(no);
 }
 
 int main() {
 	Arvore* avr = criarArvore();
-	No* no;
 	int valores[7] = { 1, 2, 3, 4, 5, 6, 7 };
 	int i = 0;
 	
-	vazia(avr);
-	
-	for (i = 0; i <= 7; i++){
-		adicionar(avr, no, valores[i]);
+	for (i = 0; i < 7; i++) {
+		avr->raiz = adicionar(avr, avr->raiz, valores[i]);
 	}
 	
-	percorrer(no);
-	
+	printf("Valores na árvore (em ordem): ");
+	percorrer(avr->raiz);
+	printf("\n");
+
+	// Limpeza da árvore
+	remover(avr, avr->raiz);
+	free(avr);
 	return 0;
 }
 
-
-// No *no = criar(....);
-//
-// while(no != NULL) {
-//	 int fator = fb(no);
-//	 no = no->pai;
-// }
