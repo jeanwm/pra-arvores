@@ -2,10 +2,10 @@
 #include <stdlib.h>
 
 typedef struct no {
-    struct no* pai;      //ponteiro para o nó pai
-    struct no* esquerda; //ponteiro para o nó filho a esquerda
-    struct no* direita;  //ponteiro para o nó filho a direita
-    int valor;           //conteúdo de um nó arbitrário da árvore
+    struct no* pai;      //ponteiro para o nÃ³ pai
+    struct no* esquerda; //ponteiro para o nÃ³ filho a esquerda
+    struct no* direita;  //ponteiro para o nÃ³ filho a direita
+    int valor;           //conteÃºdo de um nÃ³ arbitrÃ¡rio da Ã¡rvore
 } No;
 
 typedef struct arvore {
