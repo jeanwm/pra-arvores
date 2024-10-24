@@ -103,7 +103,7 @@ No* adicionar(Arvore* arvore, No* no, float valor) {
 		no->direita->pai = no;
 	}
 
-	// Rebalancear a árvore
+	// Rebalancear a Ã¡rvore
 	int fator = fb(no);
 	if (fator > 1) {
 		if (fb(no->esquerda) < 0) {
@@ -154,11 +154,11 @@ int main() {
 		avr->raiz = adicionar(avr, avr->raiz, valores[i]);
 	}
 	
-	printf("Valores na árvore (em ordem): ");
+	printf("Valores na Ã¡rvore (em ordem): ");
 	percorrer(avr->raiz);
 	printf("\n");
 
-	// Limpeza da árvore
+	// Limpeza da Ã¡rvore
 	remover(avr, avr->raiz);
 	free(avr);
 	return 0;
