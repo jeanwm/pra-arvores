@@ -82,7 +82,7 @@ int pesquisaBinaria(No* no, int chave) {
             inicio = meio + 1;
         }
     }
-    return inicio; //n„o encontrou	
+    return inicio; //n√£o encontrou	
 }
 
 int localizaChave(ArvoreB* arvore, int chave) {	
@@ -98,7 +98,7 @@ int localizaChave(ArvoreB* arvore, int chave) {
         }
     }
 
-    return 0; //n„o encontrou	
+    return 0; //n√£o encontrou	
 }
 
 No* localizaNo(ArvoreB* arvore, int chave) {	
@@ -110,12 +110,12 @@ No* localizaNo(ArvoreB* arvore, int chave) {
         int i = pesquisaBinaria(no, chave);
 
         if (no->filhos[i] == NULL)
-            return no; //encontrou nÛ
+            return no; //encontrou n√≥
         else
             no = no->filhos[i];
     }
 
-    return NULL; //n„o encontrou nenhum nÛ
+    return NULL; //n√£o encontrou nenhum n√≥
 }
 
 void adicionaChaveNo(No* no, No* novo, int chave) {
