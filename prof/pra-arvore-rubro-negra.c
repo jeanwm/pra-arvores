@@ -177,7 +177,7 @@ void balancear(Arvore* arvore, No* no) {
             }
         }
     }
-    arvore->raiz->cor = Preto; //Conserta possÌvel quebra regra 2
+    arvore->raiz->cor = Preto; //Conserta poss√≠vel quebra regra 2
 }
 
 void rotacionarEsquerda(Arvore* arvore, No* no) {
